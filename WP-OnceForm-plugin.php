@@ -8,7 +8,7 @@ Version: 0.2
 Author URI: http://adcSTUDIO.com/
 */
 
-require_once 'OnceForm/WP_OnceForm.php';
+require_once 'WP_OnceForm.php';
 require_once 'WP_MetaForm.php';
 
 if ( is_admin() )
@@ -35,4 +35,3 @@ if ( is_admin() )
 
 	} );
 }
-
