@@ -29,10 +29,19 @@ class WP_OnceForm extends OnceForm
 	protected $action;
 	protected $nonce_name;
 
-	public function __construct( $form_func = NULL, $validator = NULL, $action = -1 )
+	public function __construct( $form_func = NULL, $validator = NULL, $action = 'oncenonce' )
 	{
-		parent::__construct( $form_func, $validator );
+		if ( is_callable( $form_func ) )
+			$this->form_func = $form_func;
+		else
+			$this->form_html = $form_func;
+
+		$this->user_validator = $validator;
+
 		$this->action = $action;
+
+		if ( !is_null( $form_func ) )
+			$this->init();
 	}
 
 	public function init()
@@ -114,7 +123,7 @@ class NonceValidator extends OnceValidator
 {
 	public $action = -1;
 
-	public function __construct( $props = NULL, $action = -1 )
+	public function __construct( $props = NULL, $action = 'oncenonce' )
 	{
 		parent::__construct( $props );
 
