@@ -103,6 +103,15 @@ class WP_OnceForm extends OnceForm
 					new NonceFieldType( $name ) );
 		}
 	}
+
+	/**
+	 * Checks the PHP GP objects, to see if a request has been made.
+	 * Called automatically in init. Also strips out the WP enforced
+	 * magic quotes.
+	 */
+	public function get_request_data() {
+		return stripslashes_deep( parent::get_request_data() );
+	}
 }
 
 class NonceFieldType extends SubFieldType
