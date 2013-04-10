@@ -59,7 +59,7 @@ class WP_MetaForm
 		}
 
 		// set default forms values
-		$this->onceform->resolve_request( $data );
+		$this->onceform->set_data( $data );
 
 		echo $this->onceform;
 	}
