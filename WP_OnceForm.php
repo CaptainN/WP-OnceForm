@@ -99,7 +99,7 @@ class WP_OnceForm extends OnceForm
 
 			// add a oncefield for the nonce field
 			if ( $node->getAttribute('name') == $name )
-				$this->fields[] = new InputField( $node,
+				$this->fields[ $name ] = new InputField( $node,
 					new NonceFieldType( $name ) );
 		}
 	}
