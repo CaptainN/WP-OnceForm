@@ -61,7 +61,7 @@ class WP_OnceForm extends OnceForm
 		// verify, and set this new data
 		$this->set_data( $data );
 
-		if ( $this->isRequest )
+		if ( $this->is_request() )
 			$this->isValid = $this->validate();
 	}
 

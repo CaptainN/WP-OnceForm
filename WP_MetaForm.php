@@ -39,10 +39,12 @@ class WP_MetaForm
 
 	private function init_onceform()
 	{
-		$this->onceform = new WP_OnceForm(
-			$this->rawform,
-			$this->validator
-		);
+		if ( !isset( $this->onceform ) ) {
+			$this->onceform = new WP_OnceForm(
+				$this->rawform,
+				$this->validator
+			);
+		}
 	}
 
 	function admin_meta_box( $post )
@@ -51,15 +53,15 @@ class WP_MetaForm
 
 		$fields = $this->onceform->get_field_names();
 
+		// load saved values from field names
 		$data = array();
-		foreach( $fields as $field )
-		{
+		foreach( $fields as $field ) {
 			$fieldname = $this->prefix . $field;
 			$data[ $field ] = get_post_meta( $post->ID, $fieldname,	true );
 		}
 
-		// set default forms values
-		$this->onceform->set_data( $data );
+		// set saved forms values
+		$this->onceform->set_data( $data, false );
 
 		echo $this->onceform;
 	}
@@ -76,13 +78,14 @@ class WP_MetaForm
 		// Onceform will not be available yet - so make it so
 		$this->init_onceform();
 
+		// save the onceform data
 		$meta_keys = array();
-		foreach( $this->onceform->data as $meta_key => $meta_data )
-		{
+		foreach( $this->onceform->data as $meta_key => $meta_data ) {
 			$meta_keys[] = $meta_key;
 			update_post_meta( $post_id, self::POST_META_PREFIX.$meta_key, $meta_data );
 		}
 
+		// store the keys
 		update_post_meta( $post_id, self::POST_META_KEYS, $meta_keys );
 	}
 }
