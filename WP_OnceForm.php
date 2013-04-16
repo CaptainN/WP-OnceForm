@@ -116,15 +116,12 @@ class WP_OnceForm extends OnceForm
 
 class NonceFieldType extends SubFieldType
 {
-	//public $nodes;
-
 	public function __construct( $name )
 	{
 		// note: enumerable is set false here.
 		parent::__construct( 'input', 'hidden', 'NonceField', 'NonceValidator',
 			false, "//input[@type='hidden' and @name='$name']"
 		);
-		//$this->nodes = $nodes;
 	}
 }
 
