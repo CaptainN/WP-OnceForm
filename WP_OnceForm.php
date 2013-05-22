@@ -31,38 +31,19 @@ class WP_OnceForm extends OnceForm
 
 	public function __construct( $form_func = NULL, $validator = NULL, $action = 'oncenonce' )
 	{
-		if ( is_callable( $form_func ) )
-			$this->form_func = $form_func;
-		else
-			$this->form_html = $form_func;
-
-		$this->user_validator = $validator;
-
 		$this->action = $action;
 
-		if ( !is_null( $form_func ) )
-			$this->init();
+		parent::__construct( $form_func, $validator );
 	}
 
 	public function init()
 	{
-		if ( is_callable( $this->form_func ) )
-			$this->capture_form( $this->form_func );
+		$this->init_form();
 
-		$this->parse_form();
-		$this->extract_fields();
-
-		// inserts the nonce fiels must happen after extract_fields
+		// inserts the nonce fields must happen after extract_fields
 		$this->insert_nonce( $this->action );
 
-		// get the request data
-		$data = $this->get_request_data();
-
-		// verify, and set this new data
-		$this->set_data( $data );
-
-		if ( $this->is_request() )
-			$this->isValid = $this->validate();
+		$this->init_request();
 	}
 
 	/**
