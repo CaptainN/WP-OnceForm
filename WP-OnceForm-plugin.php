@@ -16,10 +16,10 @@ if ( is_admin() )
 	add_action( 'admin_menu', function() {
 
 		add_menu_page(
-			'onceformtests',
-			'OnceForm Tests',
+			'onceformwp',
+			'OnceForm.WP',
 			'manage_options',
-			'onceformtests',
+			'onceformwp',
 
 			function()
 			{
