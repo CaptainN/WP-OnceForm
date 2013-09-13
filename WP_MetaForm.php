@@ -14,21 +14,23 @@ class WP_MetaForm
 		$this->rawform = $form;
 		$this->validator = $validator;
 
-		if ( is_array( $options ) )
-		{
+		if ( is_array( $options ) ) {
 			if ( !empty( $options['prefix'] ) )
 				$this->prefix = $options['prefix'];
 			if ( !empty( $options['label'] ) )
 				$this->label = $options['label'];
 			if ( !empty( $options['post_type'] ) )
 				$this->post_type = $options['post_type'];
+			// Only wire up the save_meta handler if autosave is true,
+			// or not set (to default to true).
+			if ( empty( $options['autosave'] ) )
+				add_action( 'save_post', array( &$this, 'save_meta') );
 		}
 	}
 
 	public function metabox()
 	{
-		if ( current_user_can( 'manage_options' ) )
-		{
+		if ( current_user_can( 'manage_options' ) ) {
 			add_meta_box( $this->prefix.'_meta_box',
 				$this->label,
 				array( &$this, 'admin_meta_box' ), $this->post_type,
@@ -44,10 +46,12 @@ class WP_MetaForm
 				$this->rawform,
 				$this->validator
 			);
+			var_dump($this->onceform->is_request());
+			var_dump($this->onceform->data);
 		}
 	}
 
-	function admin_meta_box( $post )
+	public function admin_meta_box( $post )
 	{
 		$this->init_onceform();
 
@@ -66,26 +70,21 @@ class WP_MetaForm
 		echo $this->onceform;
 	}
 
-	function save_post( $post_id )
+	public function save_meta( $post_id )
 	{
 		if ( ! current_user_can( 'manage_options' )
 			|| ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE )
 		) return;
 
-		$screen = get_current_screen();
-		if ( $screen->post_type != self::POST_TYPE ) return;
+		if ( !isset($_POST['post_type']) || $_POST['post_type'] != $this->post_type ) return;
 
 		// Onceform will not be available yet - so make it so
 		$this->init_onceform();
 
 		// save the onceform data
-		$meta_keys = array();
 		foreach( $this->onceform->data as $meta_key => $meta_data ) {
-			$meta_keys[] = $meta_key;
-			update_post_meta( $post_id, self::POST_META_PREFIX.$meta_key, $meta_data );
+			update_post_meta( $post_id, $this->prefix.$meta_key, $meta_data );
 		}
-
-		// store the keys
-		update_post_meta( $post_id, self::POST_META_KEYS, $meta_keys );
 	}
+
 }
