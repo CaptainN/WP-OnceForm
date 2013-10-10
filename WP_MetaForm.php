@@ -46,8 +46,8 @@ class WP_MetaForm
 				$this->rawform,
 				$this->validator
 			);
-			var_dump($this->onceform->is_request());
-			var_dump($this->onceform->data);
+			//var_dump($this->onceform->is_request());
+			//var_dump($this->onceform->data);
 		}
 	}
 
