@@ -46,8 +46,6 @@ class WP_MetaForm
 				$this->rawform,
 				$this->validator
 			);
-			//var_dump($this->onceform->is_request());
-			//var_dump($this->onceform->data);
 		}
 	}
 
@@ -60,8 +58,15 @@ class WP_MetaForm
 		// load saved values from field names
 		$data = array();
 		foreach( $fields as $field ) {
-			$fieldname = $this->prefix . $field;
-			$data[ $field ] = get_post_meta( $post->ID, $fieldname,	true );
+			if ( strstr( $field, '[]') ) {
+				$altn = substr( $field, 0, -2 );
+				$fieldname = substr( $this->prefix . $field, 0, -2 );
+				$data[ $altn ] = get_post_meta( $post->ID, $fieldname, true );
+			}
+			else {
+				$fieldname = $this->prefix . $field;
+				$data[ $field ] = get_post_meta( $post->ID, $fieldname,	true );
+			}
 		}
 
 		// set saved forms values
@@ -83,6 +88,9 @@ class WP_MetaForm
 
 		// save the onceform data
 		foreach( $this->onceform->data as $meta_key => $meta_data ) {
+			if ( strstr( $meta_key, '[]') ) {
+				$meta_key = substr( $meta_key, 0, -2 );
+			}
 			update_post_meta( $post_id, $this->prefix.$meta_key, $meta_data );
 		}
 	}
